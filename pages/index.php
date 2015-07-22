@@ -89,7 +89,7 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="backups/index.html">Cosmo Warehouse Admin v1.0</a>
+                <a class="navbar-brand" href="index.php">Cosmo Warehouse Admin v1.0</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -303,111 +303,120 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
             </ul>
             <!-- /.navbar-top-links -->
             <div class="navbar-default sidebar" role="navigation">
+                <p></p>
+                <img src="logo.jpg" height="125"/>
+                <p></p>
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li class="sidebar-search">
-                            <div class="input-group custom-search-form">
-                                <input type="text" class="form-control" placeholder="Search...">
-                                <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                            </div>
-                            <!-- /input-group -->
-                        </li>
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i>Refresh</a>
                         </li>
-                        <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="../flot.html">Flot Charts</a>
-                                </li>
-                                <li>
-                                    <a href="../morris.html">Morris.js Charts</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
-                            <a href="../tables.html"><i class="fa fa-table fa-fw"></i> Tables</a>
-                        </li>
-                        <li>
-                            <a href="../forms.html"><i class="fa fa-edit fa-fw"></i> Forms</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="../panels-wells.html">Panels and Wells</a>
-                                </li>
-                                <li>
-                                    <a href="../buttons.html">Buttons</a>
-                                </li>
-                                <li>
-                                    <a href="../notifications.html">Notifications</a>
-                                </li>
-                                <li>
-                                    <a href="../typography.html">Typography</a>
-                                </li>
-                                <li>
-                                    <a href="../icons.html"> Icons</a>
-                                </li>
-                                <li>
-                                    <a href="../grid.html">Grid</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Third Level <span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                    </ul>
-                                    <!-- /.nav-third-level -->
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-files-o fa-fw"></i> Sample Pages<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="../blank.html">Blank Page</a>
-                                </li>
-                                <li>
-                                    <a href="../login.html">Login Page</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                    </ul>
+
+
+                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
-            </div>
+
+                <p></p>
+                            <!-- <div class="col-sm-1 col-md-1"> -->
+                <div class="panel panel-yellow">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-2">
+                                <i class="fa fa-child fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge"><?php print_r($probcount)?></div>
+                                <div>Orphaned Picks!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+                <p></p>
+                <!-- <div class="col-sm-1 col-md-1"> -->
+                <div class="panel panel-yellow">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-2">
+                                <i class="fa fa-stack-overflow fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge"><?php print_r($probcount)?></div>
+                                <div>Retail Overstock Items!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+                <p></p>
+                <!-- <div class="col-sm-1 col-md-1"> -->
+                <div class="panel panel-red">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-2">
+                                <i class="fa fa-warning fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge"><?php print_r($probcount)?></div>
+                                <div>More than 48hrs!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+
+                <p></p>
+                <!-- <div class="col-sm-1 col-md-1"> -->
+                <div class="panel panel-red">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-2">
+                                <i class="fa fa-support fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge"><?php print_r($probcount)?></div>
+                                <div>Escalated Picks!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+
+                </div>
+
+
+    </div>
+
+
+           <!-- </div> -->
             <!-- /.navbar-static-side -->
+
+
 
         </nav>
 
@@ -468,15 +477,15 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-yellow">
+                    <div class="panel panel-green">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-history fa-5x"></i>
+                                    <i class="fa fa-send fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
                                     <div class="huge"><?php print_r($reppicks)?></div>
-                                    <div>Replenishment Picks!</div>
+                                    <div>SO Picks in Retail!</div>
                                 </div>
                             </div>
                         </div>
@@ -490,15 +499,15 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-red">
+                    <div class="panel panel-yellow">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-warning fa-5x"></i>
+                                    <i class="fa fa-recycle fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge"><?php print_r($probcount)?></div>
-                                    <div>Escalated Picks!</div>
+                                    <div class="huge"><?php print_r($reppicks)?></div>
+                                    <div>Replenishment Picks!</div>
                                 </div>
                             </div>
                         </div>
