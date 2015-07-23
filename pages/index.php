@@ -3,11 +3,18 @@
 include "database.php";
 include "database2.php";
 
+//problems and escalated picks
 $problemsquery = $sbt->prepare ("SELECT COUNT(item) as xcount FROM iciqty01 WHERE (qbin = 'NOTFOUND' OR qbin = 'CONDITION') AND qonhand > 0" );
 $problemsquery->execute ();
 $problemsquery->setFetchMode ( PDO::FETCH_ASSOC );
 $problems = $problemsquery->fetch ();
 $probcount = $problems['xcount'];
+
+if ($probcount > 0) {
+    $probstatus = "red";
+} else {
+    $probstatus = "danger";
+}
 
 $soquery = $pickingtable->prepare ("SELECT count(item) as so FROM rfpicks WHERE reason = 'Sales Order' AND active = .t.");
 $soquery->execute ();
@@ -21,6 +28,11 @@ $wkquery->setFetchMode ( PDO::FETCH_ASSOC );
 $wkpicks = $wkquery->fetch ();
 $walkingpicks = $wkpicks['wk'];
 
+if ($walkingpicks > 0) {
+    $wkstatus = "green";
+} else {
+    $wkstatus = "success";
+}
 
 $rpquery = $pickingtable->prepare ("SELECT count(item) as rep FROM rfpicks WHERE reason = 'Replenishment' AND active = .t.");
 $rpquery->execute ();
@@ -28,13 +40,48 @@ $rpquery->setFetchMode ( PDO::FETCH_ASSOC );
 $rppicks = $rpquery->fetch ();
 $reppicks = $rppicks['rep'];
 
+$oldquery = $pickingtable->prepare ("SELECT count(item) as old FROM rfpicks WHERE active = .t. and date < date()-2");
+$oldquery->execute ();
+$oldquery->setFetchMode ( PDO::FETCH_ASSOC );
+$oldpick = $oldquery->fetch ();
+$oldpicks = $oldpick['old'];
+
+if ($oldpicks > 0) {
+    $oldstatus = "red";
+    } else {
+    $oldstatus = "danger";
+}
+
+$orquery = $sbt->prepare ("SELECT count(item) as orphans FROM orphanpicks");
+$orquery->execute ();
+$orquery->setFetchMode ( PDO::FETCH_ASSOC );
+$orpick = $orquery->fetch ();
+$orpicks = $orpick['orphans'];
+
+if ($orpicks > 0) {
+    $orstatus = "yellow";
+} else {
+    $orstatus = "info";
+}
+
+$ovquery = $sbt->prepare ("SELECT COUNT(a.item) as ov FROM allretail a LEFT JOIN iciloc01 b ON a.item = b.item AND b.loctid = 'NEWK' WHERE a.qty > b.maxlevel AND b.maxlevel > 0");
+$ovquery->execute ();
+$ovquery->setFetchMode ( PDO::FETCH_ASSOC );
+$ovpicks = $ovquery->fetch ();
+$overretail = $ovpicks['ov'];
+
+if ($overretail > 0) {
+    $ovstatus = "yellow";
+} else {
+    $ovstatus = "info";
+}
+
+
 $picksquery = $pickingtable->prepare ("SELECT * from rfpicks where active = .t. order by pickorder");
 $picksquery->execute ();
 $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
 
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -83,224 +130,10 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
                 <a class="navbar-brand" href="index.php">Cosmo Warehouse Admin v1.0</a>
             </div>
             <!-- /.navbar-header -->
 
-            <ul class="nav navbar-top-links navbar-right">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-messages">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>Read All Messages</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-messages -->
-                </li>
-                <!-- /.dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-tasks">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <p>
-                                        <strong>Task 1</strong>
-                                        <span class="pull-right text-muted">40% Complete</span>
-                                    </p>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                                            <span class="sr-only">40% Complete (success)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <p>
-                                        <strong>Task 2</strong>
-                                        <span class="pull-right text-muted">20% Complete</span>
-                                    </p>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
-                                            <span class="sr-only">20% Complete</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <p>
-                                        <strong>Task 3</strong>
-                                        <span class="pull-right text-muted">60% Complete</span>
-                                    </p>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                                            <span class="sr-only">60% Complete (warning)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <p>
-                                        <strong>Task 4</strong>
-                                        <span class="pull-right text-muted">80% Complete</span>
-                                    </p>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
-                                            <span class="sr-only">80% Complete (danger)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>See All Tasks</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-tasks -->
-                </li>
-                <!-- /.dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-alerts">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-comment fa-fw"></i> New Comment
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                    <span class="pull-right text-muted small">12 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-tasks fa-fw"></i> New Task
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>See All Alerts</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-alerts -->
-                </li>
-                <!-- /.dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-user -->
-                </li>
-                <!-- /.dropdown -->
-            </ul>
             <!-- /.navbar-top-links -->
             <div class="navbar-default sidebar" role="navigation">
                 <p></p>
@@ -319,14 +152,14 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
 
                 <p></p>
                             <!-- <div class="col-sm-1 col-md-1"> -->
-                <div class="panel panel-yellow">
+                <div class="panel panel-<?php print_r($orstatus)?>">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-2">
                                 <i class="fa fa-child fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge"><?php print_r($probcount)?></div>
+                                <div class="huge"><?php print_r($orpicks)?></div>
                                 <div>Orphaned Picks!</div>
                             </div>
                         </div>
@@ -341,14 +174,14 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
                 </div>
                 <p></p>
                 <!-- <div class="col-sm-1 col-md-1"> -->
-                <div class="panel panel-yellow">
+                <div class="panel panel-<?php print_r($ovstatus) ?>">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-2">
                                 <i class="fa fa-stack-overflow fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge"><?php print_r($probcount)?></div>
+                                <div class="huge"><?php print_r($overretail)?></div>
                                 <div>Retail Overstock Items!</div>
                             </div>
                         </div>
@@ -363,14 +196,14 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
                 </div>
                 <p></p>
                 <!-- <div class="col-sm-1 col-md-1"> -->
-                <div class="panel panel-red">
+                <div class="panel panel-<?php print_r($oldstatus)?>">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-2">
                                 <i class="fa fa-warning fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge"><?php print_r($probcount)?></div>
+                                <div class="huge"><?php print_r($oldpicks)?></div>
                                 <div>More than 48hrs!</div>
                             </div>
                         </div>
@@ -386,7 +219,7 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
 
                 <p></p>
                 <!-- <div class="col-sm-1 col-md-1"> -->
-                <div class="panel panel-red">
+                <div class="panel panel-<?php print_r($probstatus)?>">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-2">
@@ -455,7 +288,7 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-green">
+                    <div class="panel panel-<?php print_r($wkstatus)?>">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
