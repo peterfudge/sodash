@@ -87,8 +87,6 @@ $ovquery->execute ();
 $ovquery->setFetchMode ( PDO::FETCH_ASSOC );
 $ovpicks = $ovquery->fetch ();
 $overretail = $ovpicks['ov'];
-print_r($overretail);
-
 
 if ($overretail > 0) {
     $ovstatus = "yellow";
@@ -107,7 +105,6 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -140,6 +137,38 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+
+    <script type="text/javascript">
+
+        var refresh_rate = 60; //<-- In seconds, change to your needs
+        var last_user_action = 0;
+
+        function reset() {
+            last_user_action = 0;
+            console.log("Reset");
+        }
+
+        setInterval(function () {
+            last_user_action++;
+            refreshCheck();
+        }, 1000);
+
+        function refreshCheck() {
+            //var focus = window.onfocus;
+            //if ((last_user_action >= refresh_rate && !has_focus && document.readyState == "complete") || lost_focus_count > focus_margin) {
+            if (last_user_action >= refresh_rate) {
+                window.location.reload(); // If this is called no reset is needed
+                reset(); // We want to reset just to make sure the location reload is not called.
+            }
+
+        }
+        window.addEventListener("click", reset, false);
+        window.addEventListener("mousemove", reset, false);
+        window.addEventListener("keypress", reset, false);
+
+    </script>
+
 
 </head>
 
@@ -444,6 +473,7 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
 
     <!-- Custom Theme JavaScript -->
     <script src="../dist/js/sb-admin-2.js"></script>
+
 
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script>
