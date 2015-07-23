@@ -40,6 +40,12 @@ $rpquery->setFetchMode ( PDO::FETCH_ASSOC );
 $rppicks = $rpquery->fetch ();
 $reppicks = $rppicks['rep'];
 
+if ($reppicks > 0) {
+    $repstatus = "yellow";
+} else {
+    $repstatus = "info";
+}
+
 $oldquery = $pickingtable->prepare ("SELECT count(item) as old FROM rfpicks WHERE active = .t. and date < date()-2");
 $oldquery->execute ();
 $oldquery->setFetchMode ( PDO::FETCH_ASSOC );
@@ -64,11 +70,25 @@ if ($orpicks > 0) {
     $orstatus = "info";
 }
 
+$sorquery = $pickingtable->prepare ("SELECT count(item) as retpick FROM rfpicks where active = .t. and reason = 'Sales Order' and bin = 'RT'");
+$sorquery->execute ();
+$sorquery->setFetchMode ( PDO::FETCH_ASSOC );
+$sorpick = $sorquery->fetch ();
+$sorpicks = $sorpick['retpick'];
+
+if ($sorpicks > 0) {
+    $sorstatus = "green";
+} else {
+    $sorstatus = "success";
+}
+
 $ovquery = $sbt->prepare ("SELECT COUNT(a.item) as ov FROM allretail a LEFT JOIN iciloc01 b ON a.item = b.item AND b.loctid = 'NEWK' WHERE a.qty > b.maxlevel AND b.maxlevel > 0");
 $ovquery->execute ();
 $ovquery->setFetchMode ( PDO::FETCH_ASSOC );
 $ovpicks = $ovquery->fetch ();
 $overretail = $ovpicks['ov'];
+print_r($overretail);
+
 
 if ($overretail > 0) {
     $ovstatus = "yellow";
@@ -310,14 +330,14 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-green">
+                    <div class="panel panel-<?php print_r($sorstatus)?>">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
                                     <i class="fa fa-send fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge"><?php print_r($reppicks)?></div>
+                                    <div class="huge"><?php print_r($sorpicks)?></div>
                                     <div>SO Picks in Retail!</div>
                                 </div>
                             </div>
@@ -332,7 +352,7 @@ $picksquery->setFetchMode ( PDO::FETCH_ASSOC );
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-yellow">
+                    <div class="panel panel-<?php print_r($repstatus)?>">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
